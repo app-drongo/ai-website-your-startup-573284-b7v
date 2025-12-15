@@ -1,7 +1,14 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Check, Zap, Star, ArrowRight } from 'lucide-react';
 import { useState } from 'react';
@@ -9,90 +16,69 @@ import { useSmartNavigation } from '@/hooks/useSmartNavigation';
 
 const DEFAULT_PRICING = {
   title: 'Simple, Transparent Pricing',
-  subtitle: "Choose the perfect plan for your team's needs. Scale as you grow.",
-  billingToggle: {
-    monthly: 'Monthly',
-    yearly: 'Yearly',
-  },
-  yearlyDiscount: 'Save 20%',
+  subtitle: 'Choose the perfect plan for your deployment needs',
+  billingToggleText: 'Annual billing saves 20%',
   plans: [
     {
       id: 'starter',
       name: 'Starter',
-      description: 'Perfect for individuals and small teams getting started',
-      monthlyPrice: 29,
-      yearlyPrice: 23,
-      currency: '$',
-      period: 'per user/month',
-      features: [
-        'Up to 5 team members',
-        '10GB storage',
-        'Basic analytics',
-        'Email support',
-        'Core integrations',
-      ],
+      description: 'Perfect for small projects and personal use',
+      monthlyPrice: 9,
+      yearlyPrice: 72,
+      isPopular: false,
+      features: ['5 deployments per month', '1GB storage', 'Community support', 'Basic analytics'],
       ctaText: 'Start Free Trial',
       ctaHref: '/signup?plan=starter',
-      popular: false,
     },
     {
-      id: 'professional',
-      name: 'Professional',
-      description: 'Advanced features for growing teams and businesses',
-      monthlyPrice: 79,
-      yearlyPrice: 63,
-      currency: '$',
-      period: 'per user/month',
+      id: 'pro',
+      name: 'Pro',
+      description: 'Ideal for growing teams and businesses',
+      monthlyPrice: 29,
+      yearlyPrice: 276,
+      isPopular: true,
       features: [
-        'Up to 25 team members',
-        '100GB storage',
-        'Advanced analytics',
+        'Unlimited deployments',
+        '10GB storage',
         'Priority support',
-        'All integrations',
-        'Custom workflows',
-        'API access',
+        'Advanced analytics',
+        'Custom domains',
+        'Team collaboration',
       ],
-      ctaText: 'Get Started',
-      ctaHref: '/signup?plan=professional',
-      popular: true,
+      ctaText: 'Start Pro Trial',
+      ctaHref: '/signup?plan=pro',
     },
     {
       id: 'enterprise',
       name: 'Enterprise',
-      description: 'Custom solutions for large organizations',
-      monthlyPrice: 199,
-      yearlyPrice: 159,
-      currency: '$',
-      period: 'per user/month',
+      description: 'For large organizations with custom needs',
+      monthlyPrice: 99,
+      yearlyPrice: 948,
+      isPopular: false,
       features: [
-        'Unlimited team members',
-        'Unlimited storage',
-        'Custom analytics',
+        'Unlimited everything',
+        '100GB storage',
         '24/7 dedicated support',
         'Custom integrations',
-        'Advanced security',
+        'SSO & advanced security',
         'SLA guarantee',
       ],
       ctaText: 'Contact Sales',
       ctaHref: '/contact?plan=enterprise',
-      popular: false,
     },
   ],
-  faq: {
-    title: 'Frequently Asked Questions',
-    items: [
-      {
-        question: 'Can I change plans anytime?',
-        answer:
-          'Yes, you can upgrade or downgrade your plan at any time. Changes take effect immediately.',
-      },
-      {
-        question: 'Is there a free trial?',
-        answer:
-          'We offer a 14-day free trial for all plans. No credit card required to get started.',
-      },
-    ],
-  },
+  faqTitle: 'Frequently Asked Questions',
+  faqs: [
+    {
+      question: 'Can I change plans anytime?',
+      answer:
+        'Yes, you can upgrade or downgrade your plan at any time. Changes take effect immediately.',
+    },
+    {
+      question: 'Is there a free trial?',
+      answer: 'All paid plans come with a 14-day free trial. No credit card required to start.',
+    },
+  ],
 } as const;
 
 type PricingProps = Partial<typeof DEFAULT_PRICING>;
@@ -118,7 +104,7 @@ export default function Pricing(props: PricingProps) {
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6">
             <span data-editable="title">{config.title}</span>
           </h1>
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-8">
+          <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
             <span data-editable="subtitle">{config.subtitle}</span>
           </p>
 
@@ -127,43 +113,43 @@ export default function Pricing(props: PricingProps) {
             <span
               className={`text-sm ${!isYearly ? 'text-foreground font-medium' : 'text-muted-foreground'}`}
             >
-              <span data-editable="billingToggle.monthly">{config.billingToggle.monthly}</span>
+              Monthly
             </span>
             <button
               onClick={toggleBilling}
-              className="relative w-12 h-6 bg-muted rounded-full transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-ring"
-              aria-label="Toggle billing period"
+              className="relative inline-flex h-6 w-11 items-center rounded-full bg-muted transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+              role="switch"
+              aria-checked={isYearly}
             >
-              <div
-                className={`absolute top-1 left-1 w-4 h-4 bg-primary rounded-full transition-transform duration-200 ${isYearly ? 'translate-x-6' : ''}`}
+              <span
+                className={`inline-block h-4 w-4 transform rounded-full bg-primary transition-transform ${
+                  isYearly ? 'translate-x-6' : 'translate-x-1'
+                }`}
               />
             </button>
-            <div className="flex items-center gap-2">
-              <span
-                className={`text-sm ${isYearly ? 'text-foreground font-medium' : 'text-muted-foreground'}`}
-              >
-                <span data-editable="billingToggle.yearly">{config.billingToggle.yearly}</span>
-              </span>
-              <Badge variant="secondary" className="bg-accent text-accent-foreground">
-                <Zap className="w-3 h-3 mr-1" />
-                <span data-editable="yearlyDiscount">{config.yearlyDiscount}</span>
+            <span
+              className={`text-sm ${isYearly ? 'text-foreground font-medium' : 'text-muted-foreground'}`}
+            >
+              Yearly
+            </span>
+            {isYearly && (
+              <Badge variant="secondary" className="ml-2">
+                <span data-editable="billingToggleText">{config.billingToggleText}</span>
               </Badge>
-            </div>
+            )}
           </div>
         </div>
 
         {/* Pricing Cards */}
-        <div className="grid gap-8 lg:grid-cols-3 max-w-7xl mx-auto mb-16">
+        <div className="grid gap-8 lg:grid-cols-3 mb-20">
           {config.plans.map((plan, idx) => (
             <Card
               key={plan.id}
-              className={`relative bg-card text-card-foreground border-border hover:shadow-lg transition-all duration-300 ${
-                plan.popular ? 'border-primary shadow-md scale-105' : ''
-              }`}
+              className={`relative ${plan.isPopular ? 'border-primary shadow-lg scale-105' : 'border-border'}`}
             >
-              {plan.popular && (
+              {plan.isPopular && (
                 <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                  <Badge className="bg-primary text-primary-foreground px-4 py-1">
+                  <Badge className="bg-primary text-primary-foreground">
                     <Star className="w-3 h-3 mr-1" />
                     Most Popular
                   </Badge>
@@ -171,51 +157,33 @@ export default function Pricing(props: PricingProps) {
               )}
 
               <CardHeader className="text-center pb-8">
-                <h3 className="text-2xl font-bold mb-2">
+                <CardTitle className="text-2xl font-bold">
                   <span data-editable={`plans[${idx}].name`}>{plan.name}</span>
-                </h3>
-                <p className="text-muted-foreground mb-6">
+                </CardTitle>
+                <CardDescription className="text-muted-foreground">
                   <span data-editable={`plans[${idx}].description`}>{plan.description}</span>
-                </p>
+                </CardDescription>
 
-                <div className="mb-6">
-                  <div className="flex items-baseline justify-center gap-1">
-                    <span className="text-3xl font-bold">
-                      <span data-editable={`plans[${idx}].currency`}>{plan.currency}</span>
+                <div className="mt-6">
+                  <div className="flex items-baseline justify-center">
+                    <span className="text-4xl font-bold">
+                      ${isYearly ? Math.floor(plan.yearlyPrice / 12) : plan.monthlyPrice}
                     </span>
-                    <span className="text-5xl font-bold">
-                      <span
-                        data-editable={`plans[${idx}].${isYearly ? 'yearlyPrice' : 'monthlyPrice'}`}
-                      >
-                        {isYearly ? plan.yearlyPrice : plan.monthlyPrice}
-                      </span>
-                    </span>
+                    <span className="text-muted-foreground ml-1">/month</span>
                   </div>
-                  <p className="text-muted-foreground mt-2">
-                    <span data-editable={`plans[${idx}].period`}>{plan.period}</span>
-                  </p>
+                  {isYearly && (
+                    <p className="text-sm text-muted-foreground mt-1">
+                      Billed annually (${plan.yearlyPrice})
+                    </p>
+                  )}
                 </div>
-
-                <Button
-                  onClick={() => handlePlanSelect(plan.ctaHref)}
-                  className={`w-full ${
-                    plan.popular
-                      ? 'bg-primary text-primary-foreground hover:bg-primary/90'
-                      : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'
-                  }`}
-                  data-editable-href={`plans[${idx}].ctaHref`}
-                  data-href={plan.ctaHref}
-                >
-                  <span data-editable={`plans[${idx}].ctaText`}>{plan.ctaText}</span>
-                  <ArrowRight className="w-4 h-4 ml-2" />
-                </Button>
               </CardHeader>
 
               <CardContent>
-                <ul className="space-y-4">
+                <ul className="space-y-3">
                   {plan.features.map((feature, featureIdx) => (
-                    <li key={featureIdx} className="flex items-start gap-3">
-                      <Check className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
+                    <li key={featureIdx} className="flex items-center">
+                      <Check className="w-4 h-4 text-primary mr-3 flex-shrink-0" />
                       <span className="text-sm">
                         <span data-editable={`plans[${idx}].features[${featureIdx}]`}>
                           {feature}
@@ -225,6 +193,18 @@ export default function Pricing(props: PricingProps) {
                   ))}
                 </ul>
               </CardContent>
+
+              <CardFooter>
+                <Button
+                  className={`w-full ${plan.isPopular ? 'bg-primary text-primary-foreground hover:bg-primary/90' : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'}`}
+                  onClick={() => handlePlanSelect(plan.ctaHref)}
+                  data-editable-href={`plans[${idx}].ctaHref`}
+                  data-href={plan.ctaHref}
+                >
+                  <span data-editable={`plans[${idx}].ctaText`}>{plan.ctaText}</span>
+                  <ArrowRight className="w-4 h-4 ml-2" />
+                </Button>
+              </CardFooter>
             </Card>
           ))}
         </div>
@@ -232,17 +212,20 @@ export default function Pricing(props: PricingProps) {
         {/* FAQ Section */}
         <div className="max-w-3xl mx-auto">
           <h2 className="text-3xl font-bold text-center mb-12">
-            <span data-editable="faq.title">{config.faq.title}</span>
+            <span data-editable="faqTitle">{config.faqTitle}</span>
           </h2>
+
           <div className="space-y-6">
-            {config.faq.items.map((item, idx) => (
+            {config.faqs.map((faq, idx) => (
               <Card key={idx} className="bg-card text-card-foreground">
-                <CardContent className="p-6">
-                  <h3 className="text-lg font-semibold mb-3">
-                    <span data-editable={`faq.items[${idx}].question`}>{item.question}</span>
-                  </h3>
+                <CardHeader>
+                  <CardTitle className="text-lg">
+                    <span data-editable={`faqs[${idx}].question`}>{faq.question}</span>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
                   <p className="text-muted-foreground">
-                    <span data-editable={`faq.items[${idx}].answer`}>{item.answer}</span>
+                    <span data-editable={`faqs[${idx}].answer`}>{faq.answer}</span>
                   </p>
                 </CardContent>
               </Card>
