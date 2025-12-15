@@ -10,8 +10,9 @@ const DEFAULT_NAVIGATION = {
   brandName: 'TechStartup',
   brandTagline: "Transforming ideas into scalable solutions for tomorrow's digital world",
   navItems: [
-    { label: 'Home', href: '#hero' },
+    { label: 'Home', href: '/' },
     { label: 'Features', href: '#features' },
+    { label: 'Pricing', href: '/pricing' },
   ],
   ctaText: 'Get Started',
   ctaHref: '#hero',

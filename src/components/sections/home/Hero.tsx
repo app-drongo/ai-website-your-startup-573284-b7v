@@ -3,29 +3,31 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { ArrowRight, Shield, Zap, Users } from 'lucide-react';
-import Image from 'next/image';
-import { useState, useEffect } from 'react';
+import { ArrowRight, Zap, Shield, Rocket, Star, Users, TrendingUp } from 'lucide-react';
 import { useSmartNavigation } from '@/hooks/useSmartNavigation';
+import { useState, useEffect } from 'react';
 
 const DEFAULT_HERO = {
-  headline: 'Build the Future with Innovative Tech Solutions',
-  subheadline:
-    'Empowering startups and enterprises to scale faster with cutting-edge technology that adapts to your vision',
-  ctaText: 'Get Started Today',
-  ctaHref: '/get-started',
-  secondaryCtaText: 'View Demo',
+  badge: '🚀 Now in Beta',
+  title: 'Build the Future of Tech',
+  subtitle:
+    'Revolutionary platform that transforms how startups scale, innovate, and dominate their markets with cutting-edge technology.',
+  description:
+    "Join thousands of tech pioneers who've accelerated their growth by 300% using our AI-powered development suite.",
+  primaryCtaText: 'Start Building',
+  primaryCtaHref: '/get-started',
+  secondaryCtaText: 'Watch Demo',
   secondaryCtaHref: '/demo',
-  heroImageUrl:
-    'https://images.unsplash.com/photo-1551434678-e076c223a692?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80',
-  heroImageAlt: 'Modern tech dashboard interface showing analytics and data visualization',
-  trustIndicators: [
-    { icon: 'Users', text: 'Trusted by 500+ companies' },
-    { icon: 'Zap', text: '99.9% uptime guarantee' },
-    { icon: 'Shield', text: 'Enterprise-grade security' },
+  stats: [
+    { label: 'Active Users', value: '50K+', icon: 'Users' },
+    { label: 'Growth Rate', value: '300%', icon: 'TrendingUp' },
+    { label: 'Success Rate', value: '99.9%', icon: 'Star' },
   ],
-  statsLabel: 'Join thousands of innovators',
-  backgroundPattern: true,
+  features: [
+    { text: 'AI-Powered Development', icon: 'Zap' },
+    { text: 'Enterprise Security', icon: 'Shield' },
+    { text: 'Lightning Fast Deploy', icon: 'Rocket' },
+  ],
 } as const;
 
 type HeroProps = Partial<typeof DEFAULT_HERO>;
@@ -34,156 +36,153 @@ export default function Hero(props: HeroProps) {
   const config = { ...DEFAULT_HERO, ...props };
   const navigate = useSmartNavigation();
   const [isVisible, setIsVisible] = useState(false);
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [currentStatIndex, setCurrentStatIndex] = useState(0);
 
   useEffect(() => {
     setIsVisible(true);
+    const interval = setInterval(() => {
+      setCurrentStatIndex(prev => (prev + 1) % config.stats.length);
+    }, 3000);
+    return () => clearInterval(interval);
+  }, [config.stats.length]);
 
-    const handleMouseMove = (e: MouseEvent) => {
-      setMousePosition({ x: e.clientX, y: e.clientY });
-    };
-
-    if (typeof window !== 'undefined') {
-      window.addEventListener('mousemove', handleMouseMove);
-      return () => window.removeEventListener('mousemove', handleMouseMove);
-    }
-  }, []);
-
-  const handlePrimaryCTA = () => {
-    navigate(config.ctaHref);
+  const handlePrimaryClick = () => {
+    navigate(config.primaryCtaHref);
   };
 
-  const handleSecondaryCTA = () => {
+  const handleSecondaryClick = () => {
     navigate(config.secondaryCtaHref);
   };
 
   const getIcon = (iconName: string) => {
-    switch (iconName) {
-      case 'Users':
-        return <Users className="h-5 w-5" />;
-      case 'Zap':
-        return <Zap className="h-5 w-5" />;
-      case 'Shield':
-        return <Shield className="h-5 w-5" />;
-      default:
-        return <Zap className="h-5 w-5" />;
-    }
+    const icons = {
+      Users: Users,
+      TrendingUp: TrendingUp,
+      Star: Star,
+      Zap: Zap,
+      Shield: Shield,
+      Rocket: Rocket,
+    };
+    const IconComponent = icons[iconName as keyof typeof icons] || Zap;
+    return <IconComponent className="w-5 h-5" />;
   };
 
   return (
-    <section id="hero" className="relative bg-background text-foreground overflow-hidden">
-      {/* Background Pattern */}
-      {config.backgroundPattern && (
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5">
+    <section id="hero" className="bg-background text-foreground py-20 lg:py-32 overflow-hidden">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center max-w-4xl mx-auto">
+          {/* Badge */}
           <div
-            className="absolute inset-0 opacity-30"
-            style={{
-              background: `radial-gradient(600px circle at ${mousePosition.x}px ${mousePosition.y}px, rgba(var(--primary), 0.1), transparent 40%)`,
-            }}
-          />
-        </div>
-      )}
-
-      <div className="relative container mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-32">
-        <div className="grid gap-12 lg:gap-20 lg:grid-cols-2 items-center">
-          {/* Content */}
-          <div
-            className={`space-y-8 transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
+            className={`mb-8 transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
           >
-            {/* Trust Badge */}
             <Badge
               variant="secondary"
-              className="bg-primary/10 text-primary border-primary/20 hover:bg-primary/20 transition-colors"
+              className="bg-primary/10 text-primary border-primary/20 px-4 py-2 text-sm font-medium"
             >
-              <span data-editable="statsLabel">{config.statsLabel}</span>
+              <span data-editable="badge">{config.badge}</span>
             </Badge>
+          </div>
 
-            {/* Headlines */}
-            <div className="space-y-6">
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold leading-tight tracking-tight">
-                <span
-                  data-editable="headline"
-                  className="bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text text-transparent"
-                >
-                  {config.headline}
-                </span>
-              </h1>
+          {/* Main Heading */}
+          <div
+            className={`mb-6 transition-all duration-1000 delay-200 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+          >
+            <h1 className="text-4xl sm:text-5xl lg:text-7xl font-bold tracking-tight bg-gradient-to-r from-foreground to-muted-foreground bg-clip-text text-transparent">
+              <span data-editable="title">{config.title}</span>
+            </h1>
+          </div>
 
-              <p className="text-lg sm:text-xl lg:text-2xl text-muted-foreground leading-relaxed max-w-2xl">
-                <span data-editable="subheadline">{config.subheadline}</span>
-              </p>
-            </div>
+          {/* Subtitle */}
+          <div
+            className={`mb-6 transition-all duration-1000 delay-300 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+          >
+            <p className="text-xl sm:text-2xl text-muted-foreground font-medium leading-relaxed">
+              <span data-editable="subtitle">{config.subtitle}</span>
+            </p>
+          </div>
 
-            {/* CTAs */}
-            <div className="flex flex-col sm:flex-row gap-4">
+          {/* Description */}
+          <div
+            className={`mb-10 transition-all duration-1000 delay-400 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+          >
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+              <span data-editable="description">{config.description}</span>
+            </p>
+          </div>
+
+          {/* CTA Buttons */}
+          <div
+            className={`mb-16 transition-all duration-1000 delay-500 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+          >
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
               <Button
                 size="lg"
-                onClick={handlePrimaryCTA}
-                data-editable-href="ctaHref"
-                data-href={config.ctaHref}
-                className="bg-primary text-primary-foreground hover:bg-primary/90 transition-all duration-300 transform hover:scale-105 group"
+                onClick={handlePrimaryClick}
+                data-editable-href="primaryCtaHref"
+                data-href={config.primaryCtaHref}
+                className="bg-primary text-primary-foreground hover:bg-primary/90 px-8 py-6 text-lg font-semibold group"
               >
-                <span data-editable="ctaText">{config.ctaText}</span>
-                <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
+                <span data-editable="primaryCtaText">{config.primaryCtaText}</span>
+                <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </Button>
-
               <Button
                 variant="outline"
                 size="lg"
-                onClick={handleSecondaryCTA}
+                onClick={handleSecondaryClick}
                 data-editable-href="secondaryCtaHref"
                 data-href={config.secondaryCtaHref}
-                className="border-border hover:bg-accent hover:text-accent-foreground transition-all duration-300"
+                className="border-border text-foreground hover:bg-accent hover:text-accent-foreground px-8 py-6 text-lg font-semibold"
               >
                 <span data-editable="secondaryCtaText">{config.secondaryCtaText}</span>
               </Button>
             </div>
+          </div>
 
-            {/* Trust Indicators */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-8">
-              {config.trustIndicators.map((indicator, idx) => (
-                <div
+          {/* Stats */}
+          <div
+            className={`mb-12 transition-all duration-1000 delay-600 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+          >
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 max-w-2xl mx-auto">
+              {config.stats.map((stat, idx) => (
+                <Card
                   key={idx}
-                  className="flex items-center gap-3 text-sm text-muted-foreground transition-all duration-300 hover:text-foreground"
+                  className={`bg-card/50 border-border/50 backdrop-blur-sm transition-all duration-500 hover:bg-card hover:border-border ${
+                    currentStatIndex === idx ? 'ring-2 ring-primary/20 scale-105' : ''
+                  }`}
                 >
-                  <div className="text-primary">{getIcon(indicator.icon)}</div>
-                  <span data-editable={`trustIndicators[${idx}].text`}>{indicator.text}</span>
-                </div>
+                  <CardContent className="p-6 text-center">
+                    <div className="flex justify-center mb-3 text-primary">
+                      {getIcon(stat.icon)}
+                    </div>
+                    <div className="text-2xl font-bold text-foreground mb-1">
+                      <span data-editable={`stats[${idx}].value`}>{stat.value}</span>
+                    </div>
+                    <div className="text-sm text-muted-foreground">
+                      <span data-editable={`stats[${idx}].label`}>{stat.label}</span>
+                    </div>
+                  </CardContent>
+                </Card>
               ))}
             </div>
           </div>
 
-          {/* Hero Image */}
+          {/* Features */}
           <div
-            className={`relative transition-all duration-1000 delay-300 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
+            className={`transition-all duration-1000 delay-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
           >
-            <Card className="bg-card border-border shadow-2xl overflow-hidden transform hover:scale-105 transition-all duration-500">
-              <CardContent className="p-0">
-                <div className="relative aspect-[4/3] overflow-hidden">
-                  <Image
-                    src={config.heroImageUrl}
-                    alt={config.heroImageAlt}
-                    data-editable-src="heroImageUrl"
-                    fill
-                    className="object-cover transition-transform duration-700 hover:scale-110"
-                    priority
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px"
-                  />
-
-                  {/* Overlay gradient */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-background/20 via-transparent to-transparent" />
-
-                  {/* Floating elements */}
-                  <div className="absolute top-4 right-4 bg-primary/90 text-primary-foreground px-3 py-1 rounded-full text-sm font-medium backdrop-blur-sm">
-                    Live Dashboard
-                  </div>
+            <div className="flex flex-wrap justify-center gap-6">
+              {config.features.map((feature, idx) => (
+                <div
+                  key={idx}
+                  className="flex items-center gap-2 bg-muted/50 text-muted-foreground px-4 py-2 rounded-full border border-border/50 hover:bg-accent hover:text-accent-foreground transition-colors"
+                >
+                  <div className="text-primary">{getIcon(feature.icon)}</div>
+                  <span className="text-sm font-medium" data-editable={`features[${idx}].text`}>
+                    {feature.text}
+                  </span>
                 </div>
-              </CardContent>
-            </Card>
-
-            {/* Decorative elements */}
-            <div className="absolute -top-4 -right-4 w-24 h-24 bg-accent/20 rounded-full blur-xl animate-pulse" />
-            <div className="absolute -bottom-4 -left-4 w-32 h-32 bg-primary/10 rounded-full blur-2xl animate-pulse delay-1000" />
+              ))}
+            </div>
           </div>
         </div>
       </div>

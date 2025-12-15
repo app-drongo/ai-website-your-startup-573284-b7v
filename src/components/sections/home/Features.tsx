@@ -1,60 +1,51 @@
 'use client';
 
-import { Card, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Zap, Shield, Rocket, Users, BarChart3, Globe } from 'lucide-react';
+import { Check, Zap, Shield, Rocket, Users, BarChart3 } from 'lucide-react';
+import { useSmartNavigation } from '@/hooks/useSmartNavigation';
 
 const DEFAULT_FEATURES = {
-  sectionTitle: 'Why Choose Our Platform',
-  sectionSubtitle: 'Powerful features designed to accelerate your growth',
+  title: 'Powerful Features for Modern Teams',
+  subtitle: 'Everything you need to scale your tech startup from idea to IPO',
+  ctaText: 'Start Free Trial',
+  ctaHref: '/signup',
   features: [
     {
-      id: 'lightning-fast',
       icon: 'Zap',
       title: 'Lightning Fast Performance',
       description:
-        'Built with cutting-edge technology to deliver blazing fast load times and seamless user experiences across all devices.',
-      badge: 'Performance',
+        'Built with cutting-edge technology for blazing fast load times and seamless user experience.',
+      benefits: ['99.9% uptime guarantee', 'Sub-100ms response times', 'Global CDN network'],
     },
     {
-      id: 'enterprise-security',
       icon: 'Shield',
-      title: 'Enterprise-Grade Security',
+      title: 'Enterprise Security',
       description:
-        'Advanced encryption, multi-factor authentication, and compliance with industry standards to keep your data safe.',
-      badge: 'Security',
+        'Bank-grade security with end-to-end encryption, SOC 2 compliance, and advanced threat protection.',
+      benefits: ['256-bit SSL encryption', 'SOC 2 Type II certified', 'Advanced threat detection'],
     },
     {
-      id: 'rapid-deployment',
       icon: 'Rocket',
       title: 'Rapid Deployment',
       description:
-        'Go from concept to production in minutes with our streamlined deployment pipeline and automated scaling.',
-      badge: 'DevOps',
+        'Deploy in minutes, not hours. One-click setup with automated scaling and zero-downtime updates.',
+      benefits: ['One-click deployment', 'Auto-scaling infrastructure', 'Zero-downtime updates'],
     },
     {
-      id: 'team-collaboration',
       icon: 'Users',
       title: 'Team Collaboration',
       description:
-        'Real-time collaboration tools that keep your team synchronized and productive, no matter where they work.',
-      badge: 'Teamwork',
+        'Built for teams with real-time collaboration, role-based permissions, and integrated communication.',
+      benefits: ['Real-time collaboration', 'Role-based access control', 'Integrated chat & video'],
     },
     {
-      id: 'advanced-analytics',
       icon: 'BarChart3',
       title: 'Advanced Analytics',
       description:
-        'Comprehensive insights and reporting tools to track performance, user behavior, and business metrics.',
-      badge: 'Analytics',
-    },
-    {
-      id: 'global-scale',
-      icon: 'Globe',
-      title: 'Global Scale',
-      description:
-        'Worldwide CDN and infrastructure that automatically scales to handle millions of users without breaking a sweat.',
-      badge: 'Scale',
+        'Deep insights with real-time dashboards, custom reports, and AI-powered recommendations.',
+      benefits: ['Real-time dashboards', 'Custom report builder', 'AI-powered insights'],
     },
   ],
 } as const;
@@ -67,72 +58,99 @@ const iconMap = {
   Rocket,
   Users,
   BarChart3,
-  Globe,
 };
 
 export default function Features(props: FeaturesProps) {
   const config = { ...DEFAULT_FEATURES, ...props };
+  const navigate = useSmartNavigation();
+
+  const handleCTAClick = () => {
+    navigate(config.ctaHref);
+  };
 
   return (
-    <section id="features" className="bg-background text-foreground py-20">
+    <section id="features" className="bg-background text-foreground py-24">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-16">
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4">
-            <span data-editable="sectionTitle">{config.sectionTitle}</span>
+            <span data-editable="title">{config.title}</span>
           </h2>
-          <p className="text-lg sm:text-xl text-muted-foreground max-w-3xl mx-auto">
-            <span data-editable="sectionSubtitle">{config.sectionSubtitle}</span>
+          <p className="text-lg sm:text-xl text-muted-foreground max-w-3xl mx-auto mb-8">
+            <span data-editable="subtitle">{config.subtitle}</span>
           </p>
+          <Button
+            size="lg"
+            onClick={handleCTAClick}
+            data-editable-href="ctaHref"
+            data-href={config.ctaHref}
+            className="bg-primary text-primary-foreground hover:bg-primary/90"
+          >
+            <span data-editable="ctaText">{config.ctaText}</span>
+          </Button>
         </div>
 
         {/* Features Grid */}
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
           {config.features.map((feature, idx) => {
-            const IconComponent = iconMap[feature.icon as keyof typeof iconMap];
+            const IconComponent = iconMap[feature.icon as keyof typeof iconMap] || Zap;
 
             return (
               <Card
-                key={feature.id}
-                className="bg-card text-card-foreground border-border hover:bg-accent/5 transition-colors duration-300 group"
+                key={idx}
+                className="bg-card text-card-foreground border-border hover:shadow-lg transition-shadow duration-300"
               >
-                <CardContent className="p-8">
-                  {/* Icon and Badge */}
-                  <div className="flex items-center justify-between mb-6">
-                    <div className="bg-primary/10 text-primary p-3 rounded-lg group-hover:bg-primary/20 transition-colors duration-300">
-                      <IconComponent className="w-6 h-6" />
+                <CardHeader className="pb-4">
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className="p-2 bg-primary/10 rounded-lg">
+                      <IconComponent className="h-6 w-6 text-primary" />
                     </div>
                     <Badge variant="secondary" className="bg-secondary text-secondary-foreground">
-                      <span data-editable={`features[${idx}].badge`}>{feature.badge}</span>
+                      Feature
                     </Badge>
                   </div>
-
-                  {/* Title */}
-                  <h3 className="text-xl font-semibold mb-4 text-foreground">
+                  <CardTitle className="text-xl">
                     <span data-editable={`features[${idx}].title`}>{feature.title}</span>
-                  </h3>
-
-                  {/* Description */}
-                  <p className="text-muted-foreground leading-relaxed">
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <p className="text-muted-foreground">
                     <span data-editable={`features[${idx}].description`}>
                       {feature.description}
                     </span>
                   </p>
+                  <ul className="space-y-2">
+                    {feature.benefits.map((benefit, benefitIdx) => (
+                      <li key={benefitIdx} className="flex items-center gap-2 text-sm">
+                        <Check className="h-4 w-4 text-primary flex-shrink-0" />
+                        <span data-editable={`features[${idx}].benefits[${benefitIdx}]`}>
+                          {benefit}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
                 </CardContent>
               </Card>
             );
           })}
         </div>
 
-        {/* Bottom CTA Section */}
+        {/* Bottom CTA */}
         <div className="text-center mt-16">
-          <div className="bg-muted/50 text-muted-foreground rounded-lg p-8 max-w-2xl mx-auto">
-            <p className="text-lg">
-              Ready to experience the power of our platform?
-              <span className="text-primary font-medium ml-2">
-                Join thousands of satisfied customers worldwide.
-              </span>
+          <div className="bg-muted text-muted-foreground rounded-lg p-8 max-w-2xl mx-auto">
+            <h3 className="text-2xl font-semibold mb-4 text-foreground">Ready to get started?</h3>
+            <p className="mb-6">
+              Join thousands of teams already using our platform to build amazing products.
             </p>
+            <Button
+              size="lg"
+              onClick={handleCTAClick}
+              data-editable-href="ctaHref"
+              data-href={config.ctaHref}
+              className="bg-primary text-primary-foreground hover:bg-primary/90"
+            >
+              <span data-editable="ctaText">{config.ctaText}</span>
+            </Button>
           </div>
         </div>
       </div>
