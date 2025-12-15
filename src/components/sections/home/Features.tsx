@@ -1,64 +1,81 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Check, Zap, Shield, Rocket, Users, BarChart3 } from 'lucide-react';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Star, Quote } from 'lucide-react';
+import Image from 'next/image';
 import { useSmartNavigation } from '@/hooks/useSmartNavigation';
 
 const DEFAULT_FEATURES = {
-  title: 'Powerful Features for Modern Teams',
-  subtitle: 'Everything you need to scale your tech startup from idea to IPO',
-  ctaText: 'Start Free Trial',
-  ctaHref: '/signup',
-  features: [
+  title: 'What Our Customers Say',
+  subtitle:
+    "Don't just take our word for it - hear from the companies already transforming their workflows with our platform",
+  ctaText: 'Read All Reviews',
+  ctaHref: '/testimonials',
+  previews: [
     {
-      icon: 'Zap',
-      title: 'Lightning Fast Performance',
-      description:
-        'Built with cutting-edge technology for blazing fast load times and seamless user experience.',
-      benefits: ['99.9% uptime guarantee', 'Sub-100ms response times', 'Global CDN network'],
+      id: '1',
+      company: 'TechFlow Inc',
+      companyLogo:
+        'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=100&h=100&fit=crop&crop=center',
+      customerName: 'Sarah Chen',
+      customerRole: 'VP of Engineering',
+      customerAvatar:
+        'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=100&h=100&fit=crop&crop=face',
+      rating: 5,
+      preview:
+        'This platform has completely revolutionized how we handle our development workflow. The automation features alone have saved us 40+ hours per week...',
+      fullTestimonial:
+        'This platform has completely revolutionized how we handle our development workflow. The automation features alone have saved us 40+ hours per week, and the intuitive interface means our entire team was productive from day one.',
+      metrics: {
+        improvement: '40+ hours saved weekly',
+        category: 'Development',
+      },
     },
     {
-      icon: 'Shield',
-      title: 'Enterprise Security',
-      description:
-        'Bank-grade security with end-to-end encryption, SOC 2 compliance, and advanced threat protection.',
-      benefits: ['256-bit SSL encryption', 'SOC 2 Type II certified', 'Advanced threat detection'],
+      id: '2',
+      company: 'DataSync Solutions',
+      companyLogo:
+        'https://images.unsplash.com/photo-1572021335469-31706a17aaef?w=100&h=100&fit=crop&crop=center',
+      customerName: 'Marcus Rodriguez',
+      customerRole: 'CTO',
+      customerAvatar:
+        'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face',
+      rating: 5,
+      preview:
+        "The scalability and performance improvements we've seen are incredible. Our data processing times have decreased by 60% while handling 3x more volume...",
+      fullTestimonial:
+        "The scalability and performance improvements we've seen are incredible. Our data processing times have decreased by 60% while handling 3x more volume. The ROI was evident within the first month.",
+      metrics: {
+        improvement: '60% faster processing',
+        category: 'Performance',
+      },
     },
     {
-      icon: 'Rocket',
-      title: 'Rapid Deployment',
-      description:
-        'Deploy in minutes, not hours. One-click setup with automated scaling and zero-downtime updates.',
-      benefits: ['One-click deployment', 'Auto-scaling infrastructure', 'Zero-downtime updates'],
-    },
-    {
-      icon: 'Users',
-      title: 'Team Collaboration',
-      description:
-        'Built for teams with real-time collaboration, role-based permissions, and integrated communication.',
-      benefits: ['Real-time collaboration', 'Role-based access control', 'Integrated chat & video'],
-    },
-    {
-      icon: 'BarChart3',
-      title: 'Advanced Analytics',
-      description:
-        'Deep insights with real-time dashboards, custom reports, and AI-powered recommendations.',
-      benefits: ['Real-time dashboards', 'Custom report builder', 'AI-powered insights'],
+      id: '3',
+      company: 'InnovateLab',
+      companyLogo:
+        'https://images.unsplash.com/photo-1551434678-e076c223a692?w=100&h=100&fit=crop&crop=center',
+      customerName: 'Emily Watson',
+      customerRole: 'Product Manager',
+      customerAvatar:
+        'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop&crop=face',
+      rating: 5,
+      preview:
+        "The collaboration features have transformed how our remote team works together. We've reduced meeting time by 50% while increasing productivity...",
+      fullTestimonial:
+        "The collaboration features have transformed how our remote team works together. We've reduced meeting time by 50% while increasing productivity. It's like having everyone in the same room again.",
+      metrics: {
+        improvement: '50% fewer meetings',
+        category: 'Collaboration',
+      },
     },
   ],
 } as const;
 
 type FeaturesProps = Partial<typeof DEFAULT_FEATURES>;
-
-const iconMap = {
-  Zap,
-  Shield,
-  Rocket,
-  Users,
-  BarChart3,
-};
 
 export default function Features(props: FeaturesProps) {
   const config = { ...DEFAULT_FEATURES, ...props };
@@ -68,90 +85,125 @@ export default function Features(props: FeaturesProps) {
     navigate(config.ctaHref);
   };
 
+  const renderStars = (rating: number) => {
+    return Array.from({ length: 5 }, (_, i) => (
+      <Star
+        key={i}
+        className={`w-4 h-4 ${i < rating ? 'fill-yellow-400 text-yellow-400' : 'text-muted'}`}
+      />
+    ));
+  };
+
   return (
-    <section id="features" className="bg-background text-foreground py-24">
+    <section id="features" className="bg-background text-foreground py-20">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <div className="text-center mb-16">
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4">
+        <div className="text-center max-w-3xl mx-auto mb-16">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-6">
             <span data-editable="title">{config.title}</span>
           </h2>
-          <p className="text-lg sm:text-xl text-muted-foreground max-w-3xl mx-auto mb-8">
+          <p className="text-lg text-muted-foreground leading-relaxed">
             <span data-editable="subtitle">{config.subtitle}</span>
           </p>
+        </div>
+
+        {/* Customer Previews Grid */}
+        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3 mb-12">
+          {config.previews.map((preview, idx) => (
+            <Card
+              key={preview.id}
+              className="bg-card text-card-foreground border-border hover:shadow-lg transition-all duration-300 group"
+            >
+              <CardContent className="p-6">
+                {/* Company Header */}
+                <div className="flex items-center gap-3 mb-4">
+                  <Image
+                    src={preview.companyLogo}
+                    alt={`${preview.company} logo`}
+                    width={40}
+                    height={40}
+                    className="rounded-lg object-cover"
+                    data-editable-src={`previews[${idx}].companyLogo`}
+                  />
+                  <div>
+                    <h3 className="font-semibold text-sm">
+                      <span data-editable={`previews[${idx}].company`}>{preview.company}</span>
+                    </h3>
+                    <Badge variant="secondary" className="text-xs">
+                      <span data-editable={`previews[${idx}].metrics.category`}>
+                        {preview.metrics.category}
+                      </span>
+                    </Badge>
+                  </div>
+                </div>
+
+                {/* Rating */}
+                <div className="flex items-center gap-2 mb-4">
+                  <div className="flex">{renderStars(preview.rating)}</div>
+                  <span className="text-sm text-muted-foreground">{preview.rating}.0</span>
+                </div>
+
+                {/* Preview Text */}
+                <div className="relative mb-6">
+                  <Quote className="absolute -top-2 -left-1 w-5 h-5 text-primary/20" />
+                  <p className="text-sm text-muted-foreground leading-relaxed pl-4">
+                    <span data-editable={`previews[${idx}].preview`}>{preview.preview}</span>
+                  </p>
+                </div>
+
+                {/* Metrics */}
+                <div className="bg-primary/5 rounded-lg p-3 mb-4">
+                  <p className="text-sm font-medium text-primary">
+                    <span data-editable={`previews[${idx}].metrics.improvement`}>
+                      {preview.metrics.improvement}
+                    </span>
+                  </p>
+                </div>
+
+                {/* Customer Info */}
+                <div className="flex items-center gap-3">
+                  <Avatar className="w-10 h-10">
+                    <AvatarImage
+                      src={preview.customerAvatar}
+                      alt={preview.customerName}
+                      data-editable-src={`previews[${idx}].customerAvatar`}
+                    />
+                    <AvatarFallback>
+                      {preview.customerName
+                        .split(' ')
+                        .map(n => n[0])
+                        .join('')}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div>
+                    <p className="font-medium text-sm">
+                      <span data-editable={`previews[${idx}].customerName`}>
+                        {preview.customerName}
+                      </span>
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      <span data-editable={`previews[${idx}].customerRole`}>
+                        {preview.customerRole}
+                      </span>
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+
+        {/* CTA */}
+        <div className="text-center">
           <Button
-            size="lg"
             onClick={handleCTAClick}
+            size="lg"
+            className="bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
             data-editable-href="ctaHref"
             data-href={config.ctaHref}
-            className="bg-primary text-primary-foreground hover:bg-primary/90"
           >
             <span data-editable="ctaText">{config.ctaText}</span>
           </Button>
-        </div>
-
-        {/* Features Grid */}
-        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-          {config.features.map((feature, idx) => {
-            const IconComponent = iconMap[feature.icon as keyof typeof iconMap] || Zap;
-
-            return (
-              <Card
-                key={idx}
-                className="bg-card text-card-foreground border-border hover:shadow-lg transition-shadow duration-300"
-              >
-                <CardHeader className="pb-4">
-                  <div className="flex items-center gap-3 mb-3">
-                    <div className="p-2 bg-primary/10 rounded-lg">
-                      <IconComponent className="h-6 w-6 text-primary" />
-                    </div>
-                    <Badge variant="secondary" className="bg-secondary text-secondary-foreground">
-                      Feature
-                    </Badge>
-                  </div>
-                  <CardTitle className="text-xl">
-                    <span data-editable={`features[${idx}].title`}>{feature.title}</span>
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <p className="text-muted-foreground">
-                    <span data-editable={`features[${idx}].description`}>
-                      {feature.description}
-                    </span>
-                  </p>
-                  <ul className="space-y-2">
-                    {feature.benefits.map((benefit, benefitIdx) => (
-                      <li key={benefitIdx} className="flex items-center gap-2 text-sm">
-                        <Check className="h-4 w-4 text-primary flex-shrink-0" />
-                        <span data-editable={`features[${idx}].benefits[${benefitIdx}]`}>
-                          {benefit}
-                        </span>
-                      </li>
-                    ))}
-                  </ul>
-                </CardContent>
-              </Card>
-            );
-          })}
-        </div>
-
-        {/* Bottom CTA */}
-        <div className="text-center mt-16">
-          <div className="bg-muted text-muted-foreground rounded-lg p-8 max-w-2xl mx-auto">
-            <h3 className="text-2xl font-semibold mb-4 text-foreground">Ready to get started?</h3>
-            <p className="mb-6">
-              Join thousands of teams already using our platform to build amazing products.
-            </p>
-            <Button
-              size="lg"
-              onClick={handleCTAClick}
-              data-editable-href="ctaHref"
-              data-href={config.ctaHref}
-              className="bg-primary text-primary-foreground hover:bg-primary/90"
-            >
-              <span data-editable="ctaText">{config.ctaText}</span>
-            </Button>
-          </div>
         </div>
       </div>
     </section>

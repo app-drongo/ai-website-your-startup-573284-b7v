@@ -1,65 +1,53 @@
 'use client';
 
 import { useState } from 'react';
-import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ChevronDown, ChevronUp, MessageCircle, HelpCircle, Zap } from 'lucide-react';
+import { Card, CardContent } from '@/components/ui/card';
+import { ChevronDown, ChevronUp, HelpCircle, MessageCircle } from 'lucide-react';
 import { useSmartNavigation } from '@/hooks/useSmartNavigation';
 
 const DEFAULT_FAQ = {
   title: 'Frequently Asked Questions',
-  subtitle: 'Everything you need to know about our unified deployment platform',
-  ctaText: 'Still have questions?',
-  ctaSubtext: 'Get in touch with our team',
+  subtitle: 'Everything you need to know about our platform',
+  description: "Can't find the answer you're looking for? Reach out to our customer support team.",
+  ctaText: 'Contact Support',
   ctaHref: '/contact',
   faqs: [
     {
       id: '1',
-      category: 'Deployment',
-      question: 'How fast can I deploy my application?',
+      question: 'What programming languages do you support?',
       answer:
-        'With our unified deployment platform, you can deploy applications in under 30 seconds. Our optimized build pipeline and global CDN ensure lightning-fast deployments across all supported frameworks including Next.js, React, Vue, and more.',
-      icon: 'zap',
+        'We support all major programming languages including JavaScript, Python, Java, C++, Go, Rust, and many more. Our platform is language-agnostic and can adapt to your tech stack.',
     },
     {
       id: '2',
-      category: 'Platform',
-      question: 'What frameworks and technologies do you support?',
+      question: 'How does the pricing work?',
       answer:
-        'We support all major frontend frameworks including Next.js, React, Vue.js, Angular, Svelte, and static sites. Our platform also handles serverless functions, databases, and integrates seamlessly with your existing CI/CD workflows.',
-      icon: 'help',
+        'Our pricing is based on usage and team size. We offer flexible plans starting from individual developers to enterprise teams. All plans include core features with different usage limits and advanced capabilities.',
     },
     {
       id: '3',
-      category: 'Support',
-      question: 'Do you offer 24/7 technical support?',
+      question: 'Is there a free trial available?',
       answer:
-        'Yes! Our enterprise customers get 24/7 priority support with dedicated solution architects. All plans include comprehensive documentation, community forums, and email support with guaranteed response times.',
-      icon: 'message',
+        'Yes! We offer a 14-day free trial with full access to all features. No credit card required. You can upgrade, downgrade, or cancel anytime during or after the trial period.',
     },
     {
       id: '4',
-      category: 'Scaling',
-      question: 'How does auto-scaling work?',
+      question: 'What kind of integrations do you offer?',
       answer:
-        'Our platform automatically scales your applications based on traffic patterns and resource usage. You only pay for what you use, with intelligent load balancing and edge caching to ensure optimal performance worldwide.',
-      icon: 'zap',
+        'We integrate with popular development tools including GitHub, GitLab, Bitbucket, Jira, Slack, Discord, and many CI/CD platforms. We also provide REST APIs and webhooks for custom integrations.',
     },
     {
       id: '5',
-      category: 'Security',
-      question: 'What security measures are in place?',
+      question: 'How secure is your platform?',
       answer:
-        'We implement enterprise-grade security including SSL certificates, DDoS protection, automated security scanning, and SOC 2 compliance. Your code and data are encrypted at rest and in transit with regular security audits.',
-      icon: 'help',
+        'Security is our top priority. We use enterprise-grade encryption, SOC 2 compliance, regular security audits, and follow industry best practices. Your code and data are always protected and never shared.',
     },
     {
       id: '6',
-      category: 'Integration',
-      question: 'Can I integrate with my existing tools?',
+      question: 'Do you offer customer support?',
       answer:
-        'Absolutely! We offer seamless integrations with GitHub, GitLab, Bitbucket, Slack, Discord, and hundreds of other tools through our API and webhooks. Custom integrations are also supported.',
-      icon: 'message',
+        'Absolutely! We provide 24/7 customer support via chat, email, and video calls. Our technical team is always ready to help you get the most out of our platform.',
     },
   ],
 } as const;
@@ -81,90 +69,59 @@ export default function Faq(props: FaqProps) {
     setOpenItems(newOpenItems);
   };
 
-  const getIcon = (iconName: string) => {
-    switch (iconName) {
-      case 'zap':
-        return <Zap className="h-5 w-5 text-primary" />;
-      case 'message':
-        return <MessageCircle className="h-5 w-5 text-primary" />;
-      default:
-        return <HelpCircle className="h-5 w-5 text-primary" />;
-    }
+  const handleContactClick = () => {
+    navigate(config.ctaHref);
   };
-
-  const categories = Array.from(new Set(config.faqs.map(faq => faq.category)));
 
   return (
     <section id="faq" className="bg-background text-foreground py-20">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-4xl">
         {/* Header */}
         <div className="text-center mb-16">
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-primary/10 rounded-full mb-6">
+            <HelpCircle className="w-8 h-8 text-primary" />
+          </div>
+
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4">
             <span data-editable="title">{config.title}</span>
           </h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+
+          <p className="text-lg sm:text-xl text-muted-foreground mb-6 max-w-2xl mx-auto">
             <span data-editable="subtitle">{config.subtitle}</span>
           </p>
         </div>
 
-        {/* Category Filters */}
-        <div className="flex flex-wrap justify-center gap-2 mb-12">
-          {categories.map((category, idx) => (
-            <div
-              key={category}
-              className="px-4 py-2 bg-secondary text-secondary-foreground rounded-full text-sm font-medium"
-            >
-              <span data-editable={`categories[${idx}]`}>{category}</span>
-            </div>
-          ))}
-        </div>
-
         {/* FAQ Items */}
-        <div className="space-y-4 mb-16">
+        <div className="space-y-4 mb-12">
           {config.faqs.map((faq, idx) => {
             const isOpen = openItems.has(faq.id);
+
             return (
               <Card key={faq.id} className="bg-card text-card-foreground border-border">
                 <CardContent className="p-0">
                   <button
                     onClick={() => toggleItem(faq.id)}
-                    className="w-full p-6 text-left hover:bg-accent hover:text-accent-foreground transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 rounded-lg"
+                    className="w-full text-left p-6 flex items-center justify-between hover:bg-accent/50 transition-colors rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
                     aria-expanded={isOpen}
                     aria-controls={`faq-answer-${faq.id}`}
                   >
-                    <div className="flex items-start justify-between gap-4">
-                      <div className="flex items-start gap-4 flex-1">
-                        <div className="flex-shrink-0 mt-1">{getIcon(faq.icon)}</div>
-                        <div className="flex-1">
-                          <div className="flex items-center gap-2 mb-2">
-                            <span className="text-xs font-medium text-primary bg-primary/10 px-2 py-1 rounded-full">
-                              <span data-editable={`faqs[${idx}].category`}>{faq.category}</span>
-                            </span>
-                          </div>
-                          <h3 className="text-lg font-semibold">
-                            <span data-editable={`faqs[${idx}].question`}>{faq.question}</span>
-                          </h3>
-                        </div>
-                      </div>
-                      <div className="flex-shrink-0 mt-1">
-                        {isOpen ? (
-                          <ChevronUp className="h-5 w-5 text-muted-foreground" />
-                        ) : (
-                          <ChevronDown className="h-5 w-5 text-muted-foreground" />
-                        )}
-                      </div>
+                    <h3 className="text-lg font-semibold pr-4">
+                      <span data-editable={`faqs[${idx}].question`}>{faq.question}</span>
+                    </h3>
+
+                    <div className="flex-shrink-0">
+                      {isOpen ? (
+                        <ChevronUp className="w-5 h-5 text-muted-foreground" />
+                      ) : (
+                        <ChevronDown className="w-5 h-5 text-muted-foreground" />
+                      )}
                     </div>
                   </button>
 
                   {isOpen && (
-                    <div
-                      id={`faq-answer-${faq.id}`}
-                      className="px-6 pb-6 pt-0 animate-in slide-in-from-top-2 duration-200"
-                    >
-                      <div className="ml-9 pl-4 border-l-2 border-border">
-                        <p className="text-muted-foreground leading-relaxed">
-                          <span data-editable={`faqs[${idx}].answer`}>{faq.answer}</span>
-                        </p>
+                    <div id={`faq-answer-${faq.id}`} className="px-6 pb-6 pt-0">
+                      <div className="text-muted-foreground leading-relaxed">
+                        <span data-editable={`faqs[${idx}].answer`}>{faq.answer}</span>
                       </div>
                     </div>
                   )}
@@ -174,33 +131,26 @@ export default function Faq(props: FaqProps) {
           })}
         </div>
 
-        {/* CTA Section */}
+        {/* Contact CTA */}
         <div className="text-center">
-          <Card className="bg-primary text-primary-foreground p-8 sm:p-12">
-            <CardContent className="p-0">
-              <div className="flex flex-col items-center gap-6">
-                <div className="bg-primary-foreground/10 p-4 rounded-full">
-                  <MessageCircle className="h-8 w-8 text-primary-foreground" />
-                </div>
-                <div className="text-center">
-                  <h3 className="text-2xl font-bold mb-2">
-                    <span data-editable="ctaText">{config.ctaText}</span>
-                  </h3>
-                  <p className="text-primary-foreground/80 mb-6">
-                    <span data-editable="ctaSubtext">{config.ctaSubtext}</span>
-                  </p>
-                  <Button
-                    onClick={() => navigate(config.ctaHref)}
-                    data-editable-href="ctaHref"
-                    data-href={config.ctaHref}
-                    className="bg-primary-foreground text-primary hover:bg-primary-foreground/90 font-semibold px-8 py-3"
-                  >
-                    Contact Support
-                  </Button>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+          <div className="bg-muted/50 rounded-2xl p-8 sm:p-12">
+            <div className="inline-flex items-center justify-center w-12 h-12 bg-primary/10 rounded-full mb-4">
+              <MessageCircle className="w-6 h-6 text-primary" />
+            </div>
+
+            <p className="text-muted-foreground mb-6 max-w-md mx-auto">
+              <span data-editable="description">{config.description}</span>
+            </p>
+
+            <Button
+              onClick={handleContactClick}
+              className="bg-primary text-primary-foreground hover:bg-primary/90"
+              data-editable-href="ctaHref"
+              data-href={config.ctaHref}
+            >
+              <span data-editable="ctaText">{config.ctaText}</span>
+            </Button>
+          </div>
         </div>
       </div>
     </section>

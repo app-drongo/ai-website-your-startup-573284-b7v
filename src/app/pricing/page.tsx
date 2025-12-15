@@ -5,7 +5,7 @@ import Faq from '@/components/sections/pricing/Faq'
 import Cta from '@/components/sections/pricing/Cta'
 
 export const metadata: Metadata = {
-  title: 'Pricing',
+  title: 'Your Startup',
   description: 'Welcome to Pricing',
 }
 

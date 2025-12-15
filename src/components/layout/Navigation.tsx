@@ -13,6 +13,7 @@ const DEFAULT_NAVIGATION = {
     { label: 'Home', href: '/' },
     { label: 'Features', href: '#features' },
     { label: 'Pricing', href: '/pricing' },
+    { label: 'Reviews', href: '#reviews' },
   ],
   ctaText: 'Get Started',
   ctaHref: '#hero',
