@@ -3,12 +3,12 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { ChevronDown, ChevronUp, HelpCircle, MessageCircle } from 'lucide-react';
+import { ChevronDown, ChevronUp, Leaf, MessageCircle } from 'lucide-react';
 import { useSmartNavigation } from '@/hooks/useSmartNavigation';
 
 const DEFAULT_FAQ = {
   title: 'Frequently Asked Questions',
-  subtitle: 'Everything you need to know about our platform',
+  subtitle: 'Everything you need to know about our eco-friendly platform',
   description: "Can't find the answer you're looking for? Reach out to our customer support team.",
   ctaText: 'Contact Support',
   ctaHref: '/contact',
@@ -74,19 +74,30 @@ export default function Faq(props: FaqProps) {
   };
 
   return (
-    <section id="faq" className="bg-background text-foreground py-20">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-4xl">
+    <section
+      id="faq"
+      className="relative min-h-screen bg-cover bg-center bg-no-repeat py-20"
+      style={{
+        backgroundImage:
+          "url('https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=1920&h=1080&fit=crop')",
+      }}
+    >
+      {/* Green overlay for theme */}
+      <div className="absolute inset-0 bg-green-900/80" />
+
+      {/* Content with z-10 to appear above overlay */}
+      <div className="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8 max-w-4xl">
         {/* Header */}
         <div className="text-center mb-16">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-primary/10 rounded-full mb-6">
-            <HelpCircle className="w-8 h-8 text-primary" />
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-green-500/20 backdrop-blur-sm rounded-full mb-6 border border-green-400/30">
+            <Leaf className="w-8 h-8 text-green-300" />
           </div>
 
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 text-white">
             <span data-editable="title">{config.title}</span>
           </h2>
 
-          <p className="text-lg sm:text-xl text-muted-foreground mb-6 max-w-2xl mx-auto">
+          <p className="text-lg sm:text-xl text-green-100 mb-6 max-w-2xl mx-auto">
             <span data-editable="subtitle">{config.subtitle}</span>
           </p>
         </div>
@@ -97,30 +108,33 @@ export default function Faq(props: FaqProps) {
             const isOpen = openItems.has(faq.id);
 
             return (
-              <Card key={faq.id} className="bg-card text-card-foreground border-border">
+              <Card
+                key={faq.id}
+                className="bg-white/10 backdrop-blur-md border-green-400/30 text-white"
+              >
                 <CardContent className="p-0">
                   <button
                     onClick={() => toggleItem(faq.id)}
-                    className="w-full text-left p-6 flex items-center justify-between hover:bg-accent/50 transition-colors rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
+                    className="w-full text-left p-6 flex items-center justify-between hover:bg-green-500/20 transition-colors rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400"
                     aria-expanded={isOpen}
                     aria-controls={`faq-answer-${faq.id}`}
                   >
-                    <h3 className="text-lg font-semibold pr-4">
+                    <h3 className="text-lg font-semibold pr-4 text-white">
                       <span data-editable={`faqs[${idx}].question`}>{faq.question}</span>
                     </h3>
 
                     <div className="flex-shrink-0">
                       {isOpen ? (
-                        <ChevronUp className="w-5 h-5 text-muted-foreground" />
+                        <ChevronUp className="w-5 h-5 text-green-300" />
                       ) : (
-                        <ChevronDown className="w-5 h-5 text-muted-foreground" />
+                        <ChevronDown className="w-5 h-5 text-green-300" />
                       )}
                     </div>
                   </button>
 
                   {isOpen && (
                     <div id={`faq-answer-${faq.id}`} className="px-6 pb-6 pt-0">
-                      <div className="text-muted-foreground leading-relaxed">
+                      <div className="text-green-100 leading-relaxed">
                         <span data-editable={`faqs[${idx}].answer`}>{faq.answer}</span>
                       </div>
                     </div>
@@ -133,18 +147,18 @@ export default function Faq(props: FaqProps) {
 
         {/* Contact CTA */}
         <div className="text-center">
-          <div className="bg-muted/50 rounded-2xl p-8 sm:p-12">
-            <div className="inline-flex items-center justify-center w-12 h-12 bg-primary/10 rounded-full mb-4">
-              <MessageCircle className="w-6 h-6 text-primary" />
+          <div className="bg-white/10 backdrop-blur-md rounded-2xl p-8 sm:p-12 border border-green-400/30">
+            <div className="inline-flex items-center justify-center w-12 h-12 bg-green-500/20 rounded-full mb-4">
+              <MessageCircle className="w-6 h-6 text-green-300" />
             </div>
 
-            <p className="text-muted-foreground mb-6 max-w-md mx-auto">
+            <p className="text-green-100 mb-6 max-w-md mx-auto">
               <span data-editable="description">{config.description}</span>
             </p>
 
             <Button
               onClick={handleContactClick}
-              className="bg-primary text-primary-foreground hover:bg-primary/90"
+              className="bg-green-600 text-white hover:bg-green-700 border-0 shadow-lg hover:shadow-xl transition-all duration-300"
               data-editable-href="ctaHref"
               data-href={config.ctaHref}
             >

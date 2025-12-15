@@ -6,7 +6,7 @@ import Reviews from '@/components/sections/home/Reviews'
 import Customer-preview from '@/components/sections/home/Customer-preview'
 
 export const metadata: Metadata = {
-  title: 'Your Startup',
+  title: 'Home',
   description: 'Welcome to Home',
 }
 

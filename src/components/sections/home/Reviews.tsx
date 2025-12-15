@@ -3,47 +3,51 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Star, ArrowRight } from 'lucide-react';
+import { Star, ArrowRight, Quote } from 'lucide-react';
 import { useSmartNavigation } from '@/hooks/useSmartNavigation';
 
 const DEFAULT_REVIEWS = {
-  title: 'Trusted by Industry Leaders',
-  subtitle: 'See what our customers are saying about our platform',
+  title: 'Trusted by Tech Leaders',
+  subtitle: 'See what industry experts say about our unified deployment platform',
   ctaText: 'Read All Reviews',
   ctaHref: '/reviews',
+  showCta: true,
   reviews: [
     {
       id: '1',
       name: 'Sarah Chen',
       role: 'CTO at TechFlow',
+      company: 'TechFlow',
       avatar:
         'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150&h=150&fit=crop&crop=face',
       rating: 5,
       content:
-        'This platform has revolutionized how we handle our development workflow. The AI-powered insights have saved us countless hours and improved our code quality significantly.',
-      company: 'TechFlow',
+        'This platform revolutionized our deployment process. We went from hours to minutes, and the reliability is unmatched. The unified approach eliminated our DevOps bottlenecks completely.',
+      featured: true,
     },
     {
       id: '2',
       name: 'Marcus Rodriguez',
-      role: 'Lead Developer at InnovateLab',
+      role: 'Lead Engineer at DataSync',
+      company: 'DataSync',
       avatar:
         'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face',
       rating: 5,
       content:
-        'The seamless integration and intuitive interface made adoption effortless. Our team productivity increased by 40% within the first month of implementation.',
-      company: 'InnovateLab',
+        'The seamless integration across our entire tech stack saved us months of development time. Our team productivity increased by 300% after switching to this solution.',
+      featured: true,
     },
     {
       id: '3',
       name: 'Emily Watson',
-      role: 'Product Manager at StartupX',
+      role: 'VP Engineering at CloudVault',
+      company: 'CloudVault',
       avatar:
         'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face',
       rating: 5,
       content:
-        'Outstanding support and continuous innovation. The platform evolves with our needs and the customer success team is incredibly responsive and knowledgeable.',
-      company: 'StartupX',
+        'Outstanding platform with exceptional support. The automated scaling and monitoring features give us complete confidence in our deployments at enterprise scale.',
+      featured: false,
     },
   ],
 } as const;
@@ -54,7 +58,7 @@ export default function Reviews(props: ReviewsProps) {
   const config = { ...DEFAULT_REVIEWS, ...props };
   const navigate = useSmartNavigation();
 
-  const handleCTAClick = () => {
+  const handleCtaClick = () => {
     navigate(config.ctaHref);
   };
 
@@ -62,39 +66,48 @@ export default function Reviews(props: ReviewsProps) {
     return Array.from({ length: 5 }, (_, i) => (
       <Star
         key={i}
-        className={`w-4 h-4 ${i < rating ? 'fill-primary text-primary' : 'fill-muted text-muted'}`}
+        className={`w-4 h-4 ${
+          i < rating ? 'fill-primary text-primary' : 'fill-muted text-muted-foreground'
+        }`}
       />
     ));
   };
 
   return (
-    <section id="reviews" className="bg-background text-foreground py-16 sm:py-20 lg:py-24">
+    <section id="reviews" className="bg-background text-foreground py-20">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <div className="text-center mb-12 lg:mb-16">
+        <div className="text-center mb-16">
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4">
             <span data-editable="title">{config.title}</span>
           </h2>
-          <p className="text-lg sm:text-xl text-muted-foreground max-w-3xl mx-auto">
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
             <span data-editable="subtitle">{config.subtitle}</span>
           </p>
         </div>
 
         {/* Reviews Grid */}
-        <div className="grid gap-6 md:gap-8 lg:grid-cols-3 mb-12">
+        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3 mb-12">
           {config.reviews.map((review, idx) => (
             <Card
               key={review.id}
-              className="bg-card text-card-foreground border-border hover:shadow-lg transition-shadow duration-300"
+              className={`bg-card text-card-foreground border-border hover:shadow-lg transition-all duration-300 ${
+                review.featured ? 'ring-2 ring-primary/20 lg:scale-105' : ''
+              }`}
             >
               <CardContent className="p-6">
-                {/* Rating */}
-                <div className="flex items-center gap-1 mb-4">{renderStars(review.rating)}</div>
+                {/* Quote Icon */}
+                <div className="mb-4">
+                  <Quote className="w-8 h-8 text-primary/60" />
+                </div>
 
                 {/* Review Content */}
                 <blockquote className="text-foreground mb-6 leading-relaxed">
                   <span data-editable={`reviews[${idx}].content`}>"{review.content}"</span>
                 </blockquote>
+
+                {/* Rating */}
+                <div className="flex items-center gap-1 mb-4">{renderStars(review.rating)}</div>
 
                 {/* Reviewer Info */}
                 <div className="flex items-center gap-3">
@@ -118,7 +131,7 @@ export default function Reviews(props: ReviewsProps) {
                     <div className="text-sm text-muted-foreground">
                       <span data-editable={`reviews[${idx}].role`}>{review.role}</span>
                     </div>
-                    <div className="text-xs text-muted-foreground">
+                    <div className="text-sm text-muted-foreground">
                       <span data-editable={`reviews[${idx}].company`}>{review.company}</span>
                     </div>
                   </div>
@@ -129,18 +142,20 @@ export default function Reviews(props: ReviewsProps) {
         </div>
 
         {/* CTA */}
-        <div className="text-center">
-          <Button
-            onClick={handleCTAClick}
-            size="lg"
-            className="bg-primary text-primary-foreground hover:bg-primary/90 transition-colors duration-200"
-            data-editable-href="ctaHref"
-            data-href={config.ctaHref}
-          >
-            <span data-editable="ctaText">{config.ctaText}</span>
-            <ArrowRight className="ml-2 w-4 h-4" />
-          </Button>
-        </div>
+        {config.showCta && (
+          <div className="text-center">
+            <Button
+              onClick={handleCtaClick}
+              size="lg"
+              className="bg-primary text-primary-foreground hover:bg-primary/90 transition-colors group"
+              data-editable-href="ctaHref"
+              data-href={config.ctaHref}
+            >
+              <span data-editable="ctaText">{config.ctaText}</span>
+              <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+            </Button>
+          </div>
+        )}
       </div>
     </section>
   );
